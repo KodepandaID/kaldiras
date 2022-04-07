@@ -1,7 +1,6 @@
 import React, {
   createRef, useReducer, useLayoutEffect, useState,
 } from 'react';
-import { useId } from '@reach/auto-id';
 import { Controls } from './components/Controls';
 import { PlayIcon } from './components/icons/Play';
 import { TailwindColor } from './components/tailwind/TailwindColor';
@@ -48,8 +47,6 @@ export type VideoPreviewType = {
 export const playerRef = createRef<HTMLVideoElement>();
 
 export const Video: React.FC<VideoProps> = (props) => {
-  const id = useId();
-
   const [showSpinner, setShowSpinner] = useState(false);
 
   const [data, dispatch] = useReducer(Reducer, {
@@ -174,7 +171,7 @@ export const Video: React.FC<VideoProps> = (props) => {
             preload="true"
             autoPlay={props.autoPlay}
             ref={playerRef}
-            id={`kaldiras-player-${id}`}
+            id="kaldiras-player"
             className={videoCSS}
             crossOrigin=""
             playsInline
