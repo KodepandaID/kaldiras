@@ -26,6 +26,7 @@ For now, Kaldiras supported video types like mp4, webm, mov, and ogg. You must s
 The other property like subtitles and previews is optional. Just the source property is required.
 
 ```typescript
+import "kaldiras/kaldiras.css";
 import { Video } from "kaldiras";
 
 const App = () => {
