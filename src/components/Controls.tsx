@@ -8,7 +8,7 @@ import { VolumeHighIcon } from './icons/VolumeHigh';
 import { VolumeMuteIcon } from './icons/VolumeMute';
 import { secondToTime, timeToSecond } from '../utils/formatTime';
 import { ExitFullscreenIcon } from './icons/ExitFullscreen';
-import { VideoSubtitleType } from '../video';
+import { playerRef, VideoSubtitleType } from '../video';
 import { RotateRightIcon } from './icons/RotateRight';
 import { useVideoContext } from '../context/provider';
 import { rangeSliderCSS } from '../styles/style';
@@ -50,11 +50,14 @@ export const Controls: React.FC<ControlsProps> = (props) => {
       setShowSpeed(false);
 
       if (ctx.status !== 'error') {
-        const wMax = seekRef.current.offsetWidth + 16;
-        const wSeek = e.clientX - seekRef.current.offsetLeft;
+        const rect = playerRef.current?.getBoundingClientRect()
+        const x = rect?.x !== undefined ? rect.x : 0;
+
+        const wMax = parseInt(`${rect?.width}`);
+        const wSeek = e.clientX - x;
 
         const seekPercentage = (wSeek / wMax) * 100;
-        const ct = (ctx.duration * seekPercentage) / 100;
+        const ct = Math.round((seekPercentage / 100) * ctx.duration);
         ctx.dispatch({
           type: 'seek',
           currentTime: ct.toFixed(0),
@@ -66,16 +69,17 @@ export const Controls: React.FC<ControlsProps> = (props) => {
 
   const handlePreview = (e: React.MouseEvent<HTMLDivElement>) => {
     if (ctx !== null && controlRef.current !== null && seekRef.current !== null) {
-      const rect = controlRef.current.getBoundingClientRect();
+      const rect = playerRef.current?.getBoundingClientRect()
+      const x = rect?.x !== undefined ? rect.x : 0;
 
-      const wMax = seekRef.current.offsetWidth + 16;
-      const wSeek = e.clientX;
+      const wMax = parseInt(`${rect?.width}`);
+      const wSeek = e.clientX - x;
       const seekPercentage = (wSeek / wMax) * 100;
-      const ct = (seekPercentage / 100) * ctx.duration;
+      const ct = Math.round((seekPercentage / 100) * ctx.duration);
       const time = secondToTime(ct);
 
-      let position = e.clientX - (ctx.onFullscreen ? 50 : 60);
-      position = position > (wMax - 116) ? 0 : position;
+      let position = e.clientX - x - 50;
+      position = position > (seekRef.current.offsetWidth - 116) ? 0 : position;
 
       const preview = ctx.previews.filter((c, idx) => {
         if (ct >= timeToSecond(c.time) && (idx + 1) <= (ctx.previews.length - 1)) {
@@ -93,7 +97,7 @@ export const Controls: React.FC<ControlsProps> = (props) => {
         position,
       });
 
-      setPreviewRect(ctx.onFullscreen ? (rect.y - 10) : (rect.y - 20));
+      setPreviewRect(controlRef.current.offsetTop);
       setShowPreview(true);
     }
   };
@@ -106,12 +110,12 @@ export const Controls: React.FC<ControlsProps> = (props) => {
 
   const handleSubtitle = () => {
     if (ctx !== null && controlRef.current !== null && subtitleBoxRef.current !== null) {
-      const rect = controlRef.current.getBoundingClientRect();
       const boxRect = subtitleBoxRef.current.getBoundingClientRect();
 
-      setControlRect(ctx.onFullscreen ? (rect.y - boxRect.height - 10) : (rect.y - boxRect.height - 20));
+      setControlRect(controlRef.current.offsetTop - boxRect.height);
 
       setShowSetting(false);
+      setShowQuality(false);
       setShowSpeed(false);
       setShowSubtitle(!showSubtitle);
     }
@@ -119,10 +123,9 @@ export const Controls: React.FC<ControlsProps> = (props) => {
 
   const handleSetting = () => {
     if (ctx !== null && controlRef.current !== null && settingBoxRef.current !== null) {
-      const rect = controlRef.current.getBoundingClientRect();
       const boxRect = settingBoxRef.current.getBoundingClientRect();
 
-      setControlRect(ctx.onFullscreen ? (rect.y - boxRect.height - 10) : (rect.y - boxRect.height - 20));
+      setControlRect(controlRef.current.offsetTop - boxRect.height);
       setShowSubtitle(false);
       setShowQuality(false);
       setShowSpeed(false);

@@ -8,7 +8,7 @@ export type SubtitleSize = 'xs' | 'sm' | 'normal' | 'lg' | 'xl'
 type SubtitleProps = {
   color?: 'white' | 'black' | 'gray' | 'zinc' | 'slate' | 'stone' | 'neutral' | 'red' | 'yellow' | 'orange' | 'amber' | 'lime' | 'green' | 'blue' | 'sky' | 'indigo' | 'purple' | 'pink' | 'emerald' | 'teal' | 'cyan' | 'fuchsia' | 'violet' | 'rose'
   colorContrast?: 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
-  size: SubtitleSize
+  size?: SubtitleSize
   fullscreen?: boolean
 }
 
@@ -26,7 +26,7 @@ export const Subtitle: React.FC<SubtitleProps> = (props) => {
   const ctx = useVideoContext();
 
   const [subtitle, setSubtitle] = useState<Array<TextTrackCue>>([]);
-  const [size, setSize] = useState(textSize[props.size]);
+  const [size, setSize] = useState(textSize[props.size !== undefined ? props.size : "normal"]);
 
   useEffect(() => {
     if (ctx !== null && playerRef.current !== null) {
@@ -46,7 +46,7 @@ export const Subtitle: React.FC<SubtitleProps> = (props) => {
           }
         }
 
-        if (!ctx.onFullscreen) setSize(textSize[props.size]);
+        if (!ctx.onFullscreen) setSize(textSize[props.size !== undefined ? props.size : "normal"]);
         else setSize(textSize['3xl']);
       }
     }

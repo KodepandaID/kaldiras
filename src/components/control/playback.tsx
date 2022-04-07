@@ -23,10 +23,10 @@ export const PlaybackBox: React.FC<Props> = (props) => {
   return (
     ctx !== null ? (
       <div
-        className={`bg-black/60 absolute ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'} z-50 py-1 antialiased ${ctx.onFullscreen ? 'w-64 text-sm' : 'w-56 text-xs'} font-semibold text-white text-left`}
+        className={`bg-gray-800 absolute ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'} z-50 py-1 antialiased ${ctx.onFullscreen ? 'w-64 text-sm' : 'w-56 text-xs'} font-semibold text-white text-left`}
         style={{
           right: '20px',
-          top: `${controlRect - 140}px`,
+          top: `${ctx.onFullscreen ? controlRect - 160 : controlRect - 140}px`,
         }}
       >
         <div className="flex flex-col">

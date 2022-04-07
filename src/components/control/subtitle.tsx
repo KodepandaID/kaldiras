@@ -29,7 +29,7 @@ export const SubtitleBox = forwardRef<Ref, Props>((props, ref) => {
     ctx !== null ? (
       <div
         ref={ref}
-        className={`w-56 bg-gray-800 absolute ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'} z-50 py-1 antialiased ${ctx.onFullscreen ? 'w-64 text-sm' : 'w-56 text-xs'} font-semibold text-white`}
+        className={`bg-gray-800 absolute ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'} z-50 py-1 antialiased ${ctx.onFullscreen ? 'w-64 text-sm' : 'w-56 text-xs'} font-semibold text-white`}
         style={{
           right: '50px',
           top: `${controlRect}px`,
